@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trans</title>
+    <!-- leaflet -->
+    <link rel="stylesheet" href="css/leaflet.css" />
+    <link rel="stylesheet" href="css/leaflet.extra-markers.min.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+    <link rel="stylesheet" href="css/leaflet.extra-markers.min.css" />
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <!-- <script src="https://kit.fontawesome.com/d6443d5f10.js" crossorigin="anonymous"></script> -->
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+    integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+    <!-- our stylesheet -->
+    <link href="css/addStyle2.css" rel="stylesheet" type="text/css">
+</head>
+<header>
+  <div id="map_sibling_top">
+         <select id="country_list" onchange="zoomToCountry(this.value);">
+             <option value="">Select Country</option>
+         </select>
+      </div>
+</header>
+<body>
+  <div class="container-fluid" id="map_parent">
+        
+    <div id="bs">
+      <div class="container-fluid" id="tab">
+        <div id="bss">
+          <h1 id="country_name" style="max-width: 350px;"></h1>
+          <button type="button" id="closeButton" class="close btn-lg" aria-label="Close"
+          onclick="hide_popup()">
+              <span aria-hidden="true">&times;</span>
+          </button>
+          <h3 id="country_capital"></h3>
+          <ul class="nav nav-tabs">
+            <li class="active" id="infoTab"><a data-toggle="tab" href="#home">Country Info</a></li>
+            <li id="weatherTab"><a data-toggle="tab" href="#weather">Weather</a></li>
+            
+            <li id="newsTab"><a data-toggle="tab" href="#news">News</a></li>
+          </ul>
+          <div class="tab-content">
+            <div id="home" class="tab-pane fade in active">
+              <h3 id="country_name2"></h3>
+              <p id="cityInfo"></p>
+            
+                <table class="table table-borderless">
+                    <tr>
+                      <th>Capital City</th>
+                      <td id="country_capital2"></td>
+                    </tr>
+                    <tr>
+                      <th>Population</th>
+                      <td id="country_population"></td>
+                    </tr>
+                    <tr>
+                        <th>Area</th>
+                        <td><span id="country_area"></span> km<sup>2</sup></td>
+                      </tr>
+                    <tr>
+                      <th>Flag</th>
+                      <td>
+                        <img src="" style="height: 50px" id="country_flag" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Currency</th>
+                      <td id="country_currency"></td>
+                    </tr>
+                    <tr>
+                        <th>Currency Symbol</th>
+                        <td id="currency_symbol"></td>
+                      </tr>
+                    <tr>
+                        <th>Language Spoken</th>
+                        <td id="country_language"></td>
+                      </tr>
+                    <tr>
+                      <th>Wikipedia Page</th>
+                      <td>
+                        <a href="" target="_blank" class="text-dark" id="country_wikipedia">Click Here</a>
+                      </td>
+                    </tr>
+                  </table>
+            </div>
+            <div id="weather" class="tab-pane fade">
+              <h3 id="weather_city_name">City Name</h2>
+
+              
+                <img src="" id="mainImg" style="width: 100px; height: 100px; margin: 0 auto;">
+                <h4 id="mainHigh">High: </h4>
+                <h4 id="mainLow">Low: </h4>
+              <div id="tableContainer">
+              <table id="weatherTable">
+                <tr class="weatherRow">
+                  <td>Day</td>
+                  <td id="today">Today</td>
+                  <td id="today1">Today + 1</td>
+                  <td id="today2">Today + 2</td>
+                  <td id="today3">Today + 3</td>
+                  <td id="today4">Today + 4</td>
+                  <td id="today5">Today + 5</td>
+                  <td id="today6">Today + 6</td>
+                </tr>
+                <tr class="weatherRow">
+                  <td>Condition</td>
+                  <td><img src="" id="smallImg1" style="width: 20px; height: 20px; margin: 0 auto;"></td>
+                  <td><img src="" id="smallImg2" style="width: 20px; height: 20px; margin: 0 auto;"></td>
+                  <td><img src="" id="smallImg3" style="width: 20px; height: 20px; margin: 0 auto;"></td>
+                  <td><img src="" id="smallImg4" style="width: 20px; height: 20px; margin: 0 auto;"></td>
+                  <td><img src="" id="smallImg5" style="width: 20px; height: 20px; margin: 0 auto;"></td>
+                  <td><img src="" id="smallImg6" style="width: 20px; height: 20px; margin: 0 auto;"></td>
+                  <td><img src="" id="smallImg7" style="width: 20px; height: 20px; margin: 0 auto;"></td>
+                </tr>
+                <tr class="weatherRow">
+                  <td>High</td>
+                  <td id="highToday">Today</td>
+                  <td id="highToday1">Today + 1</td>
+                  <td id="highToday2">Today + 2</td>
+                  <td id="highToday3">Today + 3</td>
+                  <td id="highToday4">Today + 4</td>
+                  <td id="highToday5">Today + 5</td>
+                  <td id="highToday6">Today + 6</td>
+                </tr>
+                <tr class="weatherRow">
+                  <td>Low</td>
+                  <td id="lowToday">Today</td>
+                  <td id="lowToday1">Today + 1</td>
+                  <td id="lowToday2">Today + 2</td>
+                  <td id="lowToday3">Today + 3</td>
+                  <td id="lowToday4">Today + 4</td>
+                  <td id="lowToday5">Today + 5</td>
+                  <td id="lowToday6">Today + 6</td>
+                </tr>
+                <tr class="weatherRow">
+                  <td>Precipitation</td>
+                  <td id="preToday">Today</td>
+                  <td id="preToday1">Today + 1</td>
+                  <td id="preToday2">Today + 2</td>
+                  <td id="preToday3">Today + 3</td>
+                  <td id="preToday4">Today + 4</td>
+                  <td id="preToday5">Today + 5</td>
+                  <td id="preToday6">Today + 6</td>
+                </tr>
+              </table>
+              </div>
+              <br>
+            </div>
+            <div id="news" class="tab-pane fade">
+                <h3>News</h3>
+                <table id="newsTable">
+                  <tr class="newsRow">
+                    <td>
+                      <a href="" target="_blank" class="link1"><img src="" id="atricleImg1" style="height: 75px; width:75px; object-fit: cover;"></a>
+                    </td>
+                    <td>
+                      <a href="" target="_blank" class="link1"><h4 style="display: inline-block; margin-left: 10px; max-width: 350px;" id="articleTitle1">Article Title</h4></a>
+                    </td>
+                  </tr>
+                  <tr class="newsRow">
+                    <td>
+                      <a href="" target="_blank" class="link2"><img src="" id="atricleImg2" style="height: 75px; width:75px; object-fit: cover;"></a>
+                    </td>
+                    <td>
+                      <a href="" target="_blank" class="link2"><h4 style="display: inline-block; margin-left: 10px; max-width: 350px;" id="articleTitle2">Article Title</h4></a>
+                    </td>
+                  </tr>
+                  <tr class="newsRow">
+                    <td>
+                      <a href="" target="_blank" class="link3"><img src="" id="atricleImg3" style="height: 75px; width:75px; object-fit: cover;"></a>
+                    </td>
+                    <td>
+                      <a href="" target="_blank" class="link3"><h4 style="display: inline-block; margin-left: 10px; max-width: 350px;" id="articleTitle3">Article Title</h4></a>
+                    </td>
+                  </tr>
+                  <tr class="newsRow">
+                    <td>
+                      <a href="" target="_blank" class="link4"><img src="" id="atricleImg4" style="height: 75px; width:75px; object-fit: cover;"></a>
+                    </td>
+                    <td>
+                      <a href="" target="_blank" class="link4"><h4 style="display: inline-block; margin-left: 10px; max-width: 350px;" id="articleTitle4">Article Title</h4></a>
+                    </td>
+                  </tr>
+                </table>
+            </div>
+        
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div>  
+        <button type="button" id="showButton" onclick="show_popup()" class="btn btn-default" aria-label="Left Align">
+          <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+         </button>
+            
+         <button id="startButton" onclick="show_popup()">Click here dog</button>
+
+         <button id="moveMap" onclick="moveMap()">Move</button>
+      </div>
+  </div>
+  <div id="map"></div>
+  <!-- end of ours-->
+  <script src="js/leaflet.js"></script>
+  <script src="js/spin.min.js"></script>
+  <script src="js/leaflet.spin.min.js"></script>
+  <script src="js/leaflet.extra-markers.min.js"></script>
+
+  <script src="js/custom_script_add4.js"></script>
+</body>
+
+</html>
+
