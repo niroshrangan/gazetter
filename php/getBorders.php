@@ -1,16 +1,16 @@
 <?php
 
-$string = file_get_contents("../data/countryBorders.geo.json");
-$json = json_decode($string);
-$features = $json->features;
+    $fileContents = file_get_contents("../data/countryBorders.geo.json");
+    $output = json_decode($fileContents);
+    $features = $output->features;
 
-$country_code = $_GET['country_code'];
+    $borderCoords = [];
 
-$output_geom = "";
-for($i=0;$i<sizeof($features);$i++){
-    $feature = $features[$i];
-    if($feature->properties->iso_a2 == $country_code){
-        $output_geom = $feature->geometry;
+    foreach($features as $element) {
+        if ($_REQUEST['country_code'] == $element->properties->iso_a2) {
+            $borderCoords = $element->geometry;
+        }
     }
-}
-print_r(json_encode($output_geom));
+    echo json_encode($borderCoords);
+
+?>
