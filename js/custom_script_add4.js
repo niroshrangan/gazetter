@@ -1,10 +1,5 @@
-let country_boundary;
-let map;
-let cityFieldGroup;
-let wikipedia_fg;
-let country_code_global = "";
-let country_name; Esri_WorldStreetMap;
-let capitalCity = "";
+var country_boundary;
+var cityFieldGroup;
 
 var mymap = L.map('map').setView([51.505, -0.09], 13);
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
@@ -154,7 +149,6 @@ function showCityMarkers(northCoords, southCoords, eastCoords, westCoords) {
 function zoomToCountry(country_code) {
   if (country_code == "") return;
   country_name = $("#country_list option:selected").text();
-  country_code_global = country_code;
   get_country_border(country_code);
   get_country_info(country_code);
   
