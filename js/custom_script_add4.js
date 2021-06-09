@@ -38,7 +38,7 @@ function get_country_codes() {
         option +=
           '<option value="' + country[1] + '">' + country[0] + "</option>";
       }
-      $("#country_list").append(option); //.select2();
+      $("#country_list").append(option);
     },
   });
 }
