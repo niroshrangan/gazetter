@@ -27,13 +27,13 @@ var redMarker = L.icon({
 L.marker([51.505, -0.09], {icon: redMarker}).addTo(mymap);
 /////////
 
-function get_country_codes() {
+function getCountryCodes() {
   $.ajax({
-    url: "php/getCountriesCode.php?",
+    url: "php/getCountryCode.php?",
     type: "GET",
-    success: function (json) {
-      let countries = JSON.parse(json);
-      let option = "";
+    success: function (result) {
+      var countries = JSON.parse(result);
+      var option = "";
       for (country of countries) {
         option +=
           '<option value="' + country[1] + '">' + country[0] + "</option>";
@@ -43,30 +43,25 @@ function get_country_codes() {
   });
 }
 
-function get_user_location() {
+function getUserCoords() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       function (position) {
-        const {
-          latitude
-        } = position.coords;
-        const {
-          longitude
-        } = position.coords;
-        const coords = [latitude, longitude];
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
         mymap.spin(true);
         $.ajax({
-          url: "php/getCountryCodeFromLatLng.php?lat=" +
-            latitude +
-            "&lng=" +
-            longitude +
-            "&username=ShashAPI",
+          url: "php/getUserCoords.php?",
+          data: {
+            lat: lat,
+            lng: lng
+          },
           type: "GET",
-          success: function (json) {
+          success: function (result) {
             mymap.spin(false);
-            json = JSON.parse(json); // Parse the string data to JavaScript object
+            output = JSON.parse(result); // Parse the string data to JavaScript object
             // console.log(json);
-            const country_code = json.countryCode;
+            var country_code = output.countryCode;
             $("#country_list").val(country_code).trigger("change");
           },
         });
@@ -78,32 +73,31 @@ function get_user_location() {
   }
 }
 
-get_country_codes();
-get_user_location();
+getCountryCodes();
+getUserCoords();
 
-function get_country_border(country_code) {
+function getBorders(country_code) {
   $.ajax({
-    url: "php/getCountryBorder.php",
+    url: "php/getBorders.php",
     type: "GET",
     data: {
       country_code: country_code
     },
-    success: function (json) {
-      json = JSON.parse(json);
+    success: function (result) {
+      var output = JSON.parse(result);
       country_boundary.clearLayers();
-      country_boundary.addData(json).setStyle({fillColor: "red",
+      country_boundary.addData(output).setStyle({fillColor: "red",
       weight: 1,
       opacity: 0.1,
       color: "white", //Outline color
       fillOpacity: 0.6,});
-      const bounds = country_boundary.getBounds();
+      var bounds = country_boundary.getBounds();
       mymap.fitBounds(bounds);
 
       var east = bounds.getEast();
       var west = bounds.getWest();
       var north = bounds.getNorth();
       var south = bounds.getSouth();
-    //   get_nearby_cities(east, west, north, south);
       showCityMarkers(north, south, east, west);
     },
   });
@@ -131,7 +125,7 @@ function showCityMarkers(northCoords, southCoords, eastCoords, westCoords) {
                 popupAnchor: [1, -34],
                 shadowSize: [41, 41]
             });
-            for (let i = 0; i < cityData.length; i++) {
+            for (var i = 0; i < cityData.length; i++) {
                 var mapMarker = L.marker([cityData[i].lat, cityData[i].lng], {
                     icon: cityMarker,
                 }).bindPopup(
@@ -149,16 +143,13 @@ function showCityMarkers(northCoords, southCoords, eastCoords, westCoords) {
 function zoomToCountry(country_code) {
   if (country_code == "") return;
   country_name = $("#country_list option:selected").text();
-  get_country_border(country_code);
-  get_country_info(country_code);
-  
+  getBorder(country_code);
+  getCountryInfo(country_code);
   show_popup();
-  get_covid_data();
-  get_weather_data();
   mymap.spin(false);
 }
 
-function get_country_info(country_code) {
+function getCountryInfo(country_code) {
   if ($("#country_info").css("left") !== "5px") {
     $("#country_info").animate({
       left: "5px"
@@ -178,14 +169,13 @@ function get_country_info(country_code) {
     data: {
       country_code: country_code
     },
-    success: function (response) {
+    success: function (result) {
       mymap.spin(false);
-      let details = $.parseJSON(response);
+      var details = $.parseJSON(result);
       console.log(details);
       var lat = details.latlng[0];
       var lng = details.latlng[1];
       var capitalCity = details.capital;
-      var codeee = details.alpha2Code;
       $("#country_name").html(details.name);
       $("#country_name2").html(details.name);
       $("#country_capital").html(capitalCity);
@@ -202,8 +192,8 @@ function get_country_info(country_code) {
       );
     //   $("#cCode").html(details.alpha2Code);
     getCityInfo(details.capital);
-    getNewsYeah(details.name);
-    getWeatherYeah(lat, lng);
+    getNews(details.name);
+    getWeather(lat, lng);
     }
   });
 }
@@ -225,9 +215,9 @@ function getCityInfo(capitalCity) {
     })
 }
 
-function getNewsYeah(countryName) {
+function getNews(countryName) {
     $.ajax({
-        url: "php/getNewsStuff.php",
+        url: "php/getNews.php",
         type: "GET",
         data: {
             countryName: countryName
@@ -253,9 +243,9 @@ function getNewsYeah(countryName) {
     })
 }
 
-function getWeatherYeah(lat, lng) {
+function getWeather(lat, lng) {
     $.ajax({
-        url: "php/getWeatherStuff.php",
+        url: "php/getWeather.php",
         type: "GET",
         data: {
             lat: lat,
@@ -333,35 +323,4 @@ function hide_popup() {
   $("#showButton").animate({
       left: "-490px"
   }, 1000);
-}
-
-function moveMap() {
-    mymap.spin(true);
-    mymap.spin(false);
-    mymap.flyTo([50.5, 30.5], 12);
-}
-
-function get_covid_data() {
-  mymap.spin(true);
-  $.ajax({
-    url: "php/getCovidInfo.php",
-    type: "GET",
-    data: {
-      country_code: country_code_global
-    },
-    success: function (response) {
-      let details = $.parseJSON(response);
-      $("#covid_total_cases").html(details.cases);
-      $("#covid_active").html(details.active);
-      $("#covid_recovered").html(details.recovered);
-      $("#covid_deaths").html(details.deaths);
-      $("#covid_todayCases").html(details.todayCases);
-      $("#covid_todayRecovered").html(details.todayRecovered);
-      $("#covid_todayDeaths").html(details.todayDeaths);
-      $("#covid_activePerOneMillion").html(details.activePerOneMillion);
-      $("#covid_recoveredPerOneMillion").html(details.recoveredPerOneMillion);
-      mymap.spin(false);
-      $("#coronoModal").modal();
-    },
-  });
 }
